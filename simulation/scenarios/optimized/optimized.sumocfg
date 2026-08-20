@@ -1,0 +1,15 @@
+<configuration>
+    <input>
+        <net-file value="optimized.net.xml"/>
+        <route-files value="demand_optimized.rou.xml"/>
+        <additional-files value="optimized.add.xml"/>
+    </input>
+    <output>
+        <tripinfo-output value="../../outputs/tripinfo_optimized.xml"/>
+        <summary-output value="../../outputs/summary_optimized.xml"/>
+    </output>
+    <time>
+        <begin value="0"/>
+        <end value="3600"/>
+    </time>
+</configuration>

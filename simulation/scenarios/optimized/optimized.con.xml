@@ -1,0 +1,13 @@
+<connections>
+    <!-- Bus connection into the bay -->
+    <connection from="main_road_part1" to="main_road_bay" fromLane="0" toLane="0"/>
+    <!-- Normal traffic connections -->
+    <connection from="main_road_part1" to="main_road_bay" fromLane="0" toLane="1"/>
+    <connection from="main_road_part1" to="main_road_bay" fromLane="1" toLane="2"/>
+    
+    <!-- Bus connection out of the bay -->
+    <connection from="main_road_bay" to="main_road_part2" fromLane="0" toLane="0"/>
+    <!-- Normal traffic connections -->
+    <connection from="main_road_bay" to="main_road_part2" fromLane="1" toLane="0"/>
+    <connection from="main_road_bay" to="main_road_part2" fromLane="2" toLane="1"/>
+</connections>

@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+.env
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+.npm
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+
+# Secrets — never commit these
+*.env
+!.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# ML model files (large binary files — use Git LFS or a separate store)
+# ml/models/*.pkl   <- uncomment to exclude model files
+
+# Scratch
+scratch/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log

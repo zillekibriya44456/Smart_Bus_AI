@@ -1,0 +1,4 @@
+<additional>
+    <!-- Bus stop directly on the driving lane, blocking traffic -->
+    <busStop id="busStop_baseline" lane="main_road_0" startPos="500" endPos="520" lines="bus_line_1" />
+</additional>

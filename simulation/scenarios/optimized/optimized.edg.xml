@@ -1,0 +1,10 @@
+<edges>
+    <edge id="main_road_part1" from="start" to="bay_start" priority="1" numLanes="2" speed="16.67"/>
+    <!-- 3rd lane is the dedicated bus bay -->
+    <edge id="main_road_bay" from="bay_start" to="bay_end" priority="1" numLanes="3" speed="16.67">
+        <lane index="0" allow="bus"/>
+        <lane index="1" allow="passenger"/>
+        <lane index="2" allow="passenger"/>
+    </edge>
+    <edge id="main_road_part2" from="bay_end" to="end" priority="1" numLanes="2" speed="16.67"/>
+</edges>

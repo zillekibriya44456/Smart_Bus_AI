@@ -1,0 +1,10 @@
+<configuration>
+    <input>
+        <net-file value="../networks/minimal.net.xml"/>
+        <route-files value="../routes/minimal.rou.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+        <end value="100"/>
+    </time>
+</configuration>

@@ -1,0 +1,15 @@
+<configuration>
+    <input>
+        <net-file value="baseline.net.xml"/>
+        <route-files value="demand_baseline.rou.xml"/>
+        <additional-files value="baseline.add.xml"/>
+    </input>
+    <output>
+        <tripinfo-output value="../../outputs/tripinfo_baseline.xml"/>
+        <summary-output value="../../outputs/summary_baseline.xml"/>
+    </output>
+    <time>
+        <begin value="0"/>
+        <end value="3600"/>
+    </time>
+</configuration>

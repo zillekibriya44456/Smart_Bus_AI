@@ -1,0 +1,6 @@
+<nodes>
+    <node id="start" x="0.0" y="0.0" type="priority"/>
+    <node id="bay_start" x="450.0" y="0.0" type="priority"/>
+    <node id="bay_end" x="550.0" y="0.0" type="priority"/>
+    <node id="end" x="1000.0" y="0.0" type="priority"/>
+</nodes>

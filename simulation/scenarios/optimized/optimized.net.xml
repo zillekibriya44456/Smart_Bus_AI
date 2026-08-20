@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-08-18T22:55:27.760905+05:30 by Eclipse SUMO netconvert 1.27.1
+<netconvertConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <input>
+        <node-files value="optimized.nod.xml"/>
+        <edge-files value="optimized.edg.xml"/>
+        <connection-files value="optimized.con.xml"/>
+    </input>
+
+    <output>
+        <output-file value="optimized.net.xml"/>
+    </output>
+
+</netconvertConfiguration>
+-->
+
+<net version="1.20" junctionCornerDetail="5" limitTurnSpeed="5.50" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/net_file.xsd">
+
+    <location netOffset="0.00,0.00" convBoundary="0.00,0.00,1000.00,0.00" origBoundary="0.00,0.00,1000.00,0.00" projParameter="!"/>
+
+    <edge id=":bay_end_0" function="internal">
+        <lane id=":bay_end_0_0" index="0" allow="bus" speed="16.67" length="8.27" shape="546.00,-8.00 548.46,-7.50 550.00,-6.40 551.54,-5.30 554.00,-4.80"/>
+        <lane id=":bay_end_0_1" index="1" allow="passenger" speed="16.67" length="8.27" shape="546.00,-4.80 554.00,-4.80"/>
+        <lane id=":bay_end_0_2" index="2" allow="passenger" speed="16.67" length="8.27" shape="546.00,-1.60 554.00,-1.60"/>
+    </edge>
+    <edge id=":bay_start_0" function="internal">
+        <lane id=":bay_start_0_0" index="0" allow="bus" speed="16.67" length="8.27" shape="446.00,-4.80 448.46,-5.30 450.00,-6.40 451.54,-7.50 454.00,-8.00"/>
+        <lane id=":bay_start_0_1" index="1" allow="passenger" speed="16.67" length="8.27" shape="446.00,-4.80 454.00,-4.80"/>
+        <lane id=":bay_start_0_2" index="2" allow="passenger" speed="16.67" length="8.27" shape="446.00,-1.60 454.00,-1.60"/>
+    </edge>
+
+    <edge id="main_road_bay" from="bay_start" to="bay_end" priority="1">
+        <lane id="main_road_bay_0" index="0" allow="bus" speed="16.67" length="92.00" shape="454.00,-8.00 546.00,-8.00"/>
+        <lane id="main_road_bay_1" index="1" allow="passenger" speed="16.67" length="92.00" shape="454.00,-4.80 546.00,-4.80"/>
+        <lane id="main_road_bay_2" index="2" allow="passenger" speed="16.67" length="92.00" shape="454.00,-1.60 546.00,-1.60"/>
+    </edge>
+    <edge id="main_road_part1" from="start" to="bay_start" priority="1">
+        <lane id="main_road_part1_0" index="0" speed="16.67" length="446.00" shape="0.00,-4.80 446.00,-4.80"/>
+        <lane id="main_road_part1_1" index="1" speed="16.67" length="446.00" shape="0.00,-1.60 446.00,-1.60"/>
+    </edge>
+    <edge id="main_road_part2" from="bay_end" to="end" priority="1">
+        <lane id="main_road_part2_0" index="0" speed="16.67" length="446.00" shape="554.00,-4.80 1000.00,-4.80"/>
+        <lane id="main_road_part2_1" index="1" speed="16.67" length="446.00" shape="554.00,-1.60 1000.00,-1.60"/>
+    </edge>
+
+    <junction id="bay_end" type="priority" x="550.00" y="0.00" incLanes="main_road_bay_0 main_road_bay_1 main_road_bay_2" intLanes=":bay_end_0_0 :bay_end_0_1 :bay_end_0_2" shape="554.00,0.00 554.00,-6.40 550.97,-7.23 549.03,-8.77 547.79,-9.36 546.00,-9.60 546.00,0.00">
+        <request index="0" response="010" foes="010" cont="0"/>
+        <request index="1" response="000" foes="001" cont="0"/>
+        <request index="2" response="000" foes="000" cont="0"/>
+    </junction>
+    <junction id="bay_start" type="priority" x="450.00" y="0.00" incLanes="main_road_part1_0 main_road_part1_1" intLanes=":bay_start_0_0 :bay_start_0_1 :bay_start_0_2" shape="454.00,0.00 454.00,-9.60 450.97,-8.77 449.03,-7.23 447.79,-6.64 446.00,-6.40 446.00,0.00">
+        <request index="0" response="000" foes="000" cont="0"/>
+        <request index="1" response="000" foes="000" cont="0"/>
+        <request index="2" response="000" foes="000" cont="0"/>
+    </junction>
+    <junction id="end" type="dead_end" x="1000.00" y="0.00" incLanes="main_road_part2_0 main_road_part2_1" intLanes="" shape="1000.00,-6.40 1000.00,0.00"/>
+    <junction id="start" type="dead_end" x="0.00" y="0.00" incLanes="" intLanes="" shape="0.00,0.00 0.00,-6.40"/>
+
+    <connection from="main_road_bay" to="main_road_part2" fromLane="0" toLane="0" via=":bay_end_0_0" dir="s" state="m"/>
+    <connection from="main_road_bay" to="main_road_part2" fromLane="1" toLane="0" keepClear="0" via=":bay_end_0_1" dir="s" state="M"/>
+    <connection from="main_road_bay" to="main_road_part2" fromLane="2" toLane="1" keepClear="0" via=":bay_end_0_2" dir="s" state="M"/>
+    <connection from="main_road_part1" to="main_road_bay" fromLane="0" toLane="0" via=":bay_start_0_0" dir="s" state="M"/>
+    <connection from="main_road_part1" to="main_road_bay" fromLane="0" toLane="1" via=":bay_start_0_1" dir="s" state="M"/>
+    <connection from="main_road_part1" to="main_road_bay" fromLane="1" toLane="2" via=":bay_start_0_2" dir="s" state="M"/>
+
+    <connection from=":bay_end_0" to="main_road_part2" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":bay_end_0" to="main_road_part2" fromLane="1" toLane="0" dir="s" state="M"/>
+    <connection from=":bay_end_0" to="main_road_part2" fromLane="2" toLane="1" dir="s" state="M"/>
+    <connection from=":bay_start_0" to="main_road_bay" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":bay_start_0" to="main_road_bay" fromLane="1" toLane="1" dir="s" state="M"/>
+    <connection from=":bay_start_0" to="main_road_bay" fromLane="2" toLane="2" dir="s" state="M"/>
+
+</net>

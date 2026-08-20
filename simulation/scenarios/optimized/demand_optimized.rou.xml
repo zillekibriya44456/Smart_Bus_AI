@@ -1,0 +1,26 @@
+<routes>
+    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="4.5" maxSpeed="15"/>
+    <vType id="bus" accel="1.2" decel="2.5" sigma="0.5" length="12" maxSpeed="12" vClass="bus" guiShape="bus"/>
+    
+    <route id="optimized_route" edges="main_road_part1 main_road_bay main_road_part2"/>
+    
+    <!-- Background traffic -->
+    <flow id="carflow" type="car" route="optimized_route" begin="0" end="3600" number="1500" departLane="best" departSpeed="max"/>
+    
+    <!-- Scheduled buses -->
+    <vehicle id="bus1" type="bus" route="optimized_route" depart="300" color="0,1,0">
+        <stop busStop="busStop_optimized" duration="60"/>
+    </vehicle>
+    <vehicle id="bus2" type="bus" route="optimized_route" depart="900" color="0,1,0">
+        <stop busStop="busStop_optimized" duration="60"/>
+    </vehicle>
+    <vehicle id="bus3" type="bus" route="optimized_route" depart="1500" color="0,1,0">
+        <stop busStop="busStop_optimized" duration="60"/>
+    </vehicle>
+    <vehicle id="bus4" type="bus" route="optimized_route" depart="2100" color="0,1,0">
+        <stop busStop="busStop_optimized" duration="60"/>
+    </vehicle>
+    <vehicle id="bus5" type="bus" route="optimized_route" depart="2700" color="0,1,0">
+        <stop busStop="busStop_optimized" duration="60"/>
+    </vehicle>
+</routes>

@@ -1,0 +1,4 @@
+<additional>
+    <!-- Bus stop inside the dedicated bay (lane 0) -->
+    <busStop id="busStop_optimized" lane="main_road_bay_0" startPos="20" endPos="80" lines="bus_line_1" />
+</additional>

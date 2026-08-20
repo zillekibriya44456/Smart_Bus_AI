@@ -1,0 +1,21 @@
+{
+    "Scenario_A_Baseline": {
+        "Throughput": 1476,
+        "Average_Speed_kmh": 50.68,
+        "Average_Delay_s": 3.25,
+        "Average_Wait_Time_s": 0.0,
+        "Average_Bus_Travel_Time_s": 154.0
+    },
+    "Scenario_B_Optimized": {
+        "Throughput": 1476,
+        "Average_Speed_kmh": 50.74,
+        "Average_Delay_s": 3.2,
+        "Average_Wait_Time_s": 0.0,
+        "Average_Bus_Travel_Time_s": 252.0
+    },
+    "Improvements": {
+        "Speed_Increase_kmh": 0.06,
+        "Delay_Reduction_s": 0.05,
+        "Wait_Time_Reduction_s": 0.0
+    }
+}
