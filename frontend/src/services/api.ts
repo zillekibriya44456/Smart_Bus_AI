@@ -1,10 +1,10 @@
-"""
+/*
 Axios API client for the Smart Bus Stop AI backend.
 
 The base URL is read from the VITE_API_URL environment variable so the same
 build works in development (http://localhost:8000) and inside Docker
 (http://backend:8000).
-"""
+*/
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
 
