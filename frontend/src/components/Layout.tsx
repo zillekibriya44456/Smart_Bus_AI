@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Bus, Map, List, Activity } from 'lucide-react';
+import { Bus, Map, List, Activity, Route as RouteIcon } from 'lucide-react';
 
 export const Layout: React.FC<{children: React.ReactNode}> = ({ children }) => {
   const location = useLocation();
@@ -11,6 +11,7 @@ export const Layout: React.FC<{children: React.ReactNode}> = ({ children }) => {
     { path: '/analyze', label: 'Manual Input', icon: <List size={20} /> },
     { path: '/compare', label: 'Compare Locations', icon: <Activity size={20} /> },
     { path: '/audit', label: 'Existing Audit', icon: <List size={20} /> },
+    { path: '/corridor-analysis', label: 'Corridor Analysis', icon: <RouteIcon size={20} /> },
   ];
 
   return (

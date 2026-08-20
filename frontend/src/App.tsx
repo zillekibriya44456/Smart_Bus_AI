@@ -7,6 +7,7 @@ import { Results } from './pages/Results';
 import { ExistingAudit } from './pages/ExistingAudit';
 import { InteractiveMap } from './pages/InteractiveMap';
 import { CompareLocations } from './pages/CompareLocations';
+import { CorridorAnalysis } from './pages/CorridorAnalysis';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/results" element={<Results />} />
           <Route path="/audit" element={<ExistingAudit />} />
           <Route path="/map" element={<InteractiveMap />} />
+          <Route path="/corridor-analysis" element={<CorridorAnalysis />} />
         </Routes>
       </Layout>
     </BrowserRouter>

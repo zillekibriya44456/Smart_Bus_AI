@@ -127,3 +127,53 @@ class CompareLocationsResponse(BaseModel):
     Location_B_Response: LocationResponse
     Recommended_Location: str
     Recommendation_Reason: str
+
+
+class CorridorRequest(BaseModel):
+    """Request for Corridor Analysis bounding start and end points."""
+
+    Start_Latitude: float = Field(..., ge=-90, le=90)
+    Start_Longitude: float = Field(..., ge=-180, le=180)
+    End_Latitude: float = Field(..., ge=-90, le=90)
+    End_Longitude: float = Field(..., ge=-180, le=180)
+    Buffer_m: float = Field(500.0, gt=0, le=5000, description="Buffer width in metres on either side of the line.")
+
+
+class RelocationCandidate(BaseModel):
+    """A recommended candidate for a relocated bus stop."""
+
+    Latitude: float
+    Longitude: float
+    New_Score: float
+    Improvement: float
+    Distance_Moved_m: float
+    Reason: str
+
+
+class CorridorDecision(BaseModel):
+    """Decision and data for a single bus stop in the corridor."""
+
+    Stop_ID: str
+    Current_Latitude: float
+    Current_Longitude: float
+    Current_Score: float
+    Decision: Literal["RETAIN", "IMPROVE", "RELOCATE", "REMOVE"]
+    Positive_Factors: List[str]
+    Negative_Factors: List[str]
+    Explanation: str
+    Recommended_Location: Optional[RelocationCandidate] = None
+    Alternatives: List[RelocationCandidate] = Field(default_factory=list)
+
+
+class CorridorAnalysisResponse(BaseModel):
+    """Aggregated response for a corridor analysis."""
+
+    Total_Stops_Analyzed: int
+    Count_Retain: int
+    Count_Improve: int
+    Count_Relocate: int
+    Count_Remove: int
+    Average_Score_Before: float
+    Average_Score_After: float
+    Decisions: List[CorridorDecision]
+

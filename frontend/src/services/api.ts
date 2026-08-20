@@ -70,6 +70,47 @@ export interface CompareLocationsResponse {
   Recommendation_Reason: string;
 }
 
+export interface CorridorRequest {
+  Start_Latitude: number;
+  Start_Longitude: number;
+  End_Latitude: number;
+  End_Longitude: number;
+  Buffer_m?: number;
+}
+
+export interface RelocationCandidate {
+  Latitude: number;
+  Longitude: number;
+  New_Score: number;
+  Improvement: number;
+  Distance_Moved_m: number;
+  Reason: string;
+}
+
+export interface CorridorDecision {
+  Stop_ID: string;
+  Current_Latitude: number;
+  Current_Longitude: number;
+  Current_Score: number;
+  Decision: 'RETAIN' | 'IMPROVE' | 'RELOCATE' | 'REMOVE';
+  Positive_Factors: string[];
+  Negative_Factors: string[];
+  Explanation: string;
+  Recommended_Location: RelocationCandidate | null;
+  Alternatives: RelocationCandidate[];
+}
+
+export interface CorridorAnalysisResponse {
+  Total_Stops_Analyzed: number;
+  Count_Retain: number;
+  Count_Improve: number;
+  Count_Relocate: number;
+  Count_Remove: number;
+  Average_Score_Before: number;
+  Average_Score_After: number;
+  Decisions: CorridorDecision[];
+}
+
 export interface BusStop {
   Stop_ID: string;
   Passenger_Count: number;
@@ -180,5 +221,24 @@ export const getBusStops = async (): Promise<BusStop[]> => {
 
 export const getBusStopDetails = async (id: string): Promise<{ Data: Record<string, unknown>; Analysis: Partial<LocationResponse> }> => {
   const response = await api.get(`/bus-stops/${id}`);
+  return response.data;
+};
+
+export const analyzeCorridor = async (req: CorridorRequest): Promise<CorridorAnalysisResponse> => {
+  const response = await api.post<CorridorAnalysisResponse>('/analyze-corridor', req);
+  return response.data;
+};
+
+export interface NominatimResult {
+  place_id: number;
+  lat: string;
+  lon: string;
+  display_name: string;
+}
+
+export const searchLocations = async (query: string): Promise<NominatimResult[]> => {
+  // Bangalore bounding box: 77.4 to 77.8 E, 12.8 to 13.2 N
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&viewbox=77.4,13.2,77.8,12.8&bounded=1&limit=5`;
+  const response = await axios.get<NominatimResult[]>(url);
   return response.data;
 };

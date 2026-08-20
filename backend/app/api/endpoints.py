@@ -19,6 +19,10 @@ from ..models.schemas import (
     CoordinateRequest,
     CompareLocationsRequest,
     CompareLocationsResponse,
+    CorridorRequest,
+    CorridorDecision,
+    CorridorAnalysisResponse,
+    RelocationCandidate,
     InfrastructureRequest,
     LocationRequest,
     LocationResponse,
@@ -35,6 +39,7 @@ from ..services.engine import (
 from ..services.gis import derive_features_from_coordinates
 from ..services.ml_service import predict_suitability
 from ..services.optimization import optimize_bus_stops
+from ..services.corridor import get_stops_in_corridor, make_decision, optimize_relocation_in_corridor
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -331,3 +336,116 @@ def get_simulation_results() -> Dict[str, Any]:
     except Exception as exc:
         logger.exception("Error reading simulation report: %s", exc)
         raise HTTPException(status_code=500, detail="Error reading simulation report.")
+
+
+@router.post("/analyze-corridor", response_model=CorridorAnalysisResponse, tags=["Analysis"])
+def analyze_corridor(req: CorridorRequest) -> CorridorAnalysisResponse:
+    """
+    Analyze all existing bus stops along a defined corridor.
+    Automatically assigns RETAIN, IMPROVE, RELOCATE, or REMOVE decisions.
+    For RELOCATE stops, automatically searches for better candidate locations.
+    """
+    logger.info("POST /analyze-corridor — buffer=%.1fm", req.Buffer_m)
+    try:
+        # Bangalore geographic bounding box validation
+        def is_in_bangalore(lat: float, lon: float) -> bool:
+            return 12.8 <= lat <= 13.2 and 77.4 <= lon <= 77.8
+            
+        if not (is_in_bangalore(req.Start_Latitude, req.Start_Longitude) and is_in_bangalore(req.End_Latitude, req.End_Longitude)):
+            raise HTTPException(
+                status_code=400, 
+                detail="This system currently supports bus stop analysis within Bangalore, Karnataka. Please select a valid stretch inside Bangalore."
+            )
+
+        df = _get_dataframe()
+        
+        # 1. Find all stops in corridor
+        corridor_stops_df = get_stops_in_corridor(
+            df, req.Start_Latitude, req.Start_Longitude, req.End_Latitude, req.End_Longitude, req.Buffer_m
+        )
+        
+        if corridor_stops_df.empty:
+            return CorridorAnalysisResponse(
+                Total_Stops_Analyzed=0,
+                Count_Retain=0, Count_Improve=0, Count_Relocate=0, Count_Remove=0,
+                Average_Score_Before=0.0, Average_Score_After=0.0,
+                Decisions=[]
+            )
+
+        decisions: List[CorridorDecision] = []
+        scores_before = []
+        
+        # We need a first pass to establish RETAIN/IMPROVE stops to avoid relocating on top of them
+        retained_stops_idx = []
+
+        # First pass: Score and decide
+        for idx, row in corridor_stops_df.iterrows():
+            data = row.to_dict()
+            score, _ = predict_suitability(data)
+            scores_before.append(score)
+            
+            decision, explanation = make_decision(score, data)
+            pos, neg = analyze_factors(data)
+            
+            decisions.append(CorridorDecision(
+                Stop_ID=f"Unnamed Stop – ID {row.get('Stop_ID', f'stop_{idx}')}",
+                Current_Latitude=row["Latitude"],
+                Current_Longitude=row["Longitude"],
+                Current_Score=score,
+                Decision=decision,
+                Positive_Factors=pos,
+                Negative_Factors=neg,
+                Explanation=explanation
+            ))
+            
+            if decision in ("RETAIN", "IMPROVE"):
+                retained_stops_idx.append(idx)
+
+        retained_stops_df = corridor_stops_df.loc[retained_stops_idx]
+
+        # Second pass: Optimize RELOCATE stops
+        scores_after = []
+        for i, d in enumerate(decisions):
+            if d.Decision == "RELOCATE":
+                candidates = optimize_relocation_in_corridor(
+                    d.Current_Latitude, d.Current_Longitude,
+                    req.Start_Latitude, req.Start_Longitude, req.End_Latitude, req.End_Longitude,
+                    req.Buffer_m, df, retained_stops_df
+                )
+                if candidates:
+                    d.Recommended_Location = candidates[0]
+                    d.Alternatives = candidates[1:]
+                    scores_after.append(candidates[0].New_Score)
+                    
+                    # Add newly placed stop to retained list to prevent overlap for subsequent relocations
+                    new_row = pd.DataFrame([{
+                        "Latitude": candidates[0].Latitude, 
+                        "Longitude": candidates[0].Longitude
+                    }])
+                    retained_stops_df = pd.concat([retained_stops_df, new_row], ignore_index=True)
+                else:
+                    # If no valid candidates found, downgrade to REMOVE or keep RELOCATE without recommendation
+                    d.Explanation += " (Note: No better locations found in corridor)."
+                    scores_after.append(d.Current_Score)
+            elif d.Decision != "REMOVE":
+                scores_after.append(d.Current_Score)
+
+        avg_before = sum(scores_before) / len(scores_before)
+        avg_after = sum(scores_after) / len(scores_after) if scores_after else 0.0
+
+        return CorridorAnalysisResponse(
+            Total_Stops_Analyzed=len(decisions),
+            Count_Retain=sum(1 for d in decisions if d.Decision == "RETAIN"),
+            Count_Improve=sum(1 for d in decisions if d.Decision == "IMPROVE"),
+            Count_Relocate=sum(1 for d in decisions if d.Decision == "RELOCATE"),
+            Count_Remove=sum(1 for d in decisions if d.Decision == "REMOVE"),
+            Average_Score_Before=avg_before,
+            Average_Score_After=avg_after,
+            Decisions=decisions
+        )
+
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.exception("Error in analyze_corridor: %s", exc)
+        raise HTTPException(status_code=500, detail="Internal corridor analysis error.")
